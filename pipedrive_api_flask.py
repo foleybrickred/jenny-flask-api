@@ -78,7 +78,7 @@ def find_person():
             deals_url = f"{PIPEDRIVE_BASE_URL}/persons/{person_id}/deals"
             deal_resp = requests.get(deals_url, params={'api_token': PIPEDRIVE_API_TOKEN})
             deal_resp.raise_for_status()
-            deals = deal_resp.json().get('data', [])
+            deals = deal_resp.json().get('data') or []  # Safe fallback
 
             deal_list = []
             for deal in deals:

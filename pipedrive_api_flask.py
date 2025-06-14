@@ -1,4 +1,3 @@
-# pipedrive_api_flask.py
 from flask import Flask, request, jsonify
 import requests
 import logging
@@ -22,7 +21,7 @@ def get_deals(query):
         return data.get('data', {}).get('items', [])  # Always return a list
     except Exception as e:
         app.logger.exception("Error fetching deals from Pipedrive")
-        return []  # Never return None
+        return []
 
 @app.route('/lookup', methods=['GET'])
 def lookup():
@@ -47,6 +46,3 @@ def lookup():
 
 if __name__ == '__main__':
     app.run(debug=True)
-
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)

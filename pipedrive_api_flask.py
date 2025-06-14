@@ -53,7 +53,6 @@ def find_person():
         return jsonify({'error': 'Missing search query'}), 400
 
     try:
-        # Search people by name, phone, or address
         people_url = f"{PIPEDRIVE_BASE_URL}/persons/search"
         params = {
             'term': query,
@@ -74,11 +73,10 @@ def find_person():
             person_id = person_data.get('id')
             person_name = person_data.get('name')
 
-            # Get deals for the person
             deals_url = f"{PIPEDRIVE_BASE_URL}/persons/{person_id}/deals"
             deal_resp = requests.get(deals_url, params={'api_token': PIPEDRIVE_API_TOKEN})
             deal_resp.raise_for_status()
-            deals = deal_resp.json().get('data') or []  # Safe fallback
+            deals = deal_resp.json().get('data') or []
 
             deal_list = []
             for deal in deals:
@@ -98,6 +96,37 @@ def find_person():
     except Exception as e:
         app.logger.exception("Error searching for person and their deals")
         return jsonify({'error': 'Server error'}), 500
+
+@app.route('/jenny', methods=['GET'])
+def jenny_lookup():
+    query = request.args.get('q', '').strip()
+    if not query:
+        return jsonify({'response': 'I need a name, phone number, or address to look someone up.'}), 400
+
+    try:
+        url = f"https://jenny-flask-api.onrender.com/find_person?q={query}"
+        response = requests.get(url)
+        response.raise_for_status()
+        data = response.json()
+
+        if not isinstance(data, list) or len(data) == 0:
+            return jsonify({'response': f"Sorry, I couldn’t find anyone matching '{query}'."})
+
+        replies = []
+        for entry in data:
+            person = entry.get("person_name")
+            deals = entry.get("deals", [])
+            if deals:
+                for d in deals:
+                    replies.append(f"{person} has a deal titled '{d['title']}' managed by {d['owner_name']}.")
+            else:
+                replies.append(f"{person} is in our system, but they don’t currently have any active deals.")
+
+        return jsonify({'response': "\n".join(replies)})
+
+    except Exception as e:
+        app.logger.exception("Jenny lookup failed")
+        return jsonify({'response': "Something went wrong while checking the system. Please try again."}), 500
 
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 10000))

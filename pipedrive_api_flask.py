@@ -18,7 +18,8 @@ def lookup():
         "api_token": API_TOKEN
     }
     response = requests.get(API_URL, params=params)
-   if response.status_code == 200:
+
+    if response.status_code == 200:
         return jsonify(response.json())
     else:
         return jsonify({
@@ -26,10 +27,6 @@ def lookup():
             "status_code": response.status_code,
             "details": response.text
         }), 500
-
-    data = response.json()
-    results = data.get("data", {}).get("items", [])
-    return jsonify({"results": results})
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)

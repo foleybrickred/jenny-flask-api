@@ -6,7 +6,7 @@ import logging
 app = Flask(__name__)
 logging.basicConfig(level=logging.INFO)
 
-PIPEDRIVE_API_TOKEN = 'your_pipedrive_api_token'
+PIPEDRIVE_API_TOKEN = 'd46e611c6a19504113d46bce437f69136c9eff7a'
 PIPEDRIVE_BASE_URL = 'https://api.pipedrive.com/v1'
 
 def get_deals(query):

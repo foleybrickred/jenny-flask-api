@@ -14,7 +14,7 @@ def lookup():
 
     params = {
         "term": query,
-        "fields": "title,person_id,org_id,custom_fields",
+        "fields": "title,custom_fields",
         "api_token": API_TOKEN
     }
     response = requests.get(API_URL, params=params)
@@ -30,3 +30,4 @@ def lookup():
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000)
+    

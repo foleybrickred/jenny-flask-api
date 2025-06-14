@@ -18,8 +18,14 @@ def lookup():
         "api_token": API_TOKEN
     }
     response = requests.get(API_URL, params=params)
-    if response.status_code != 200:
-        return jsonify({"error": "Failed to fetch data from Pipedrive"}), 500
+   if response.status_code == 200:
+        return jsonify(response.json())
+    else:
+        return jsonify({
+            "error": "Failed to fetch data from Pipedrive",
+            "status_code": response.status_code,
+            "details": response.text
+        }), 500
 
     data = response.json()
     results = data.get("data", {}).get("items", [])
